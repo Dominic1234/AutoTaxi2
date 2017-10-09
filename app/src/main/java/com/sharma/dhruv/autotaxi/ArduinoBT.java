@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import ch.insign.tools.Logger;
 
 
 /**
@@ -119,7 +118,6 @@ public class ArduinoBT {
 		for (Integer channel : listener.channels) {
 			if (!receiveListeners.containsKey(channel)) {
 				receiveListeners.put(channel, new ArrayList<ReceiveListener>());
-				Logger.d(TAG, "Added receive listener for channel " + channel);
 			}
 
 			receiveListeners.get(channel).add(listener);
@@ -141,9 +139,7 @@ public class ArduinoBT {
 	 */
 	protected void notifyListeners(String packet) {
 		// Command format: "1234<DELIM_VALUE>somePayLoad"
-		Logger.v(TAG, "Received packet: " + packet);
 		if (packet.indexOf(DELIM_VALUE) == -1) {
-			Logger.w(TAG, "Received an invalid packet from Arduino: " + packet);
 			return;
 		}
 		String channelStr = packet.substring(0, packet.indexOf(DELIM_VALUE));
@@ -159,7 +155,6 @@ public class ArduinoBT {
 		
 		for (ReceiveListener listener : listeners) {
 			listener.receive(channel, command);
-			Logger.v(TAG, String.format("Sent '%s' to listener on channel %s", command, channel));
 		}
 	}
 	
@@ -170,7 +165,6 @@ public class ArduinoBT {
 	 * @return
 	 */
 	public void injectPacket(String packet) {
-		Logger.v(TAG, "Injected (pretend to have received) packet: " + packet);
 		notifyListeners(packet);
 	}
 
@@ -197,11 +191,9 @@ public class ArduinoBT {
 		{
 			for(BluetoothDevice pairedDevice : pairedDevices)
 			{
-				Logger.i(TAG, "Found BT device: " + pairedDevice.getName());
-				if(pairedDevice.getName().equals(deviceName)) 
+				if(pairedDevice.getName().equals(deviceName))
 				{
 					btDevice = pairedDevice;
-					Logger.i(TAG, "Found our device!");
 					break;
 				}
 			}
@@ -261,7 +253,6 @@ public class ArduinoBT {
 
 			public void run()
 			{           
-				Logger.d(TAG, "Started listening for bluetooth data");
 				while(!Thread.currentThread().isInterrupted() && !stopWorker && connected)
 				{
 					try 
@@ -274,7 +265,6 @@ public class ArduinoBT {
 							for(int i=0;i<bytesAvailable;i++)
 							{
 								byte b = packetBytes[i];
-								//Logger.i(TAG, "Byte: " + b + " Char:" + (char) b);
 								if(b == "|".charAt(0))
 								{
 									byte[] encodedBytes = new byte[readBufferPosition];
@@ -295,10 +285,8 @@ public class ArduinoBT {
 					catch (Exception e)
 					{
 						stopWorker = true;
-						Logger.e(TAG, "Error while reading bluetooth data.", e);
 					}
 				}
-				Logger.i(TAG, "Stopped listening for bluetooth data");
 			}
 		});
 
@@ -314,11 +302,9 @@ public class ArduinoBT {
 
 		try {
 			outputStream.write(packet.getBytes());
-			Logger.i(TAG, "Sent: " + packet);
 			return true;
 
 		} catch (IOException e) {
-			Logger.e(TAG, e.getMessage(), e);
 			try {
 				disconnect();
 			} catch (IOException e1) {
