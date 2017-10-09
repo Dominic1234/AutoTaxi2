@@ -15,12 +15,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.security.NoSuchProviderException;
 import java.util.Set;
 
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends ListActivity
 {
     BluetoothAdapter BA;
     //private static final String TAG = MainActivity.class.getSimpleName();
@@ -44,15 +47,43 @@ public class MainActivity extends AppCompatActivity
         }
         Set<BluetoothDevice> pairedDevices = BA.getBondedDevices();
 
-        ArrayAdapter<> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
         for (BluetoothDevice pairedDevice  : pairedDevices) {
             adapter.add(pairedDevice.getName());
         }
         adapter.notifyDataSetChanged();
-        // setListAdapter(adapter);
+        setListAdapter(adapter);
 
-        Intent intent = new Intent(this, Main2Activity.class);
-                startActivity(intent);
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        String btName = (String) getListAdapter().getItem(position);
+        ArduinoBT arduino = ArduinoBT.getInstance();
+
+        try {
+
+            // Disconnect previous device
+            arduino.removeAllReceiveListeners();
+            if (arduino.isConnected()) {
+                arduino.disconnect();
+            }
+
+            // Connect new device
+            arduino.setup(this, btName);
+
+
+            // Close chooser activity
+            finish();
+            Intent intent = new Intent(this, Main2Activity.class);
+            startActivity(intent);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Problem occured: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        } catch (NoSuchProviderException e) {
+            Toast.makeText(this, btName + " was not found.", Toast.LENGTH_LONG).show();
+        }
     }
 
 }
