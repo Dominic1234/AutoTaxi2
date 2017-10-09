@@ -64,17 +64,7 @@ public class Main2Activity extends AppCompatActivity {
        main();
 
     }
-    BluetoothSocket createBluetoothSocket(BluetoothDevice device) throws IOException {
-        if(Build.VERSION.SDK_INT >= 10){
-            try {
-                final Method m = device.getClass().getMethod("createInsecureRfcommSocketToServiceRecord", new Class[] { UUID.class });
-                return (BluetoothSocket) m.invoke(device, MY_UUID);
-            } catch (Exception e) {
-                Log.e(TAG, "Could not create Insecure RFComm Connection",e);
-            }
-        }
-        return  device.createRfcommSocketToServiceRecord(MY_UUID);
-    }
+
     public void AddTouchListener() {
         ImageView image = (ImageView) findViewById(R.id.imageView2);
         image.setOnTouchListener(new View.OnTouchListener() {
@@ -116,8 +106,6 @@ public class Main2Activity extends AppCompatActivity {
             myBluetooth = BluetoothAdapter.getDefaultAdapter();
 
             device = myBluetooth.getRemoteDevice(address);
-
-            mmSocket = createBluetoothSocket(device);
 
             mmOutStream = mmSocket.getOutputStream();
 
