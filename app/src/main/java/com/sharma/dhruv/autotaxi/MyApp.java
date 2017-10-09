@@ -1,0 +1,13 @@
+package com.sharma.dhruv.autotaxi;
+
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+
+
+public class MyApp extends AppCompatActivity
+{
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+}
