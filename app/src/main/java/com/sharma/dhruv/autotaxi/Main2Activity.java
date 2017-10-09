@@ -1,15 +1,12 @@
 package com.sharma.dhruv.autotaxi;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
 import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -30,7 +27,7 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.UUID;
 
-public class Main2Activity extends AppCompatActivity {
+public class Main2Activity extends Activity {
     public int pickx = 0, picky = 0, dropx = 0, dropy = 0;
     public int mode = 0; //0= initialise pickup, 1 = initialise dropoff
     public BluetoothAdapter myBluetooth = null;

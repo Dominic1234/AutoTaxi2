@@ -3,7 +3,6 @@ package com.sharma.dhruv.autotaxi;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 
 
 public class MyApp extends android.app.Application
