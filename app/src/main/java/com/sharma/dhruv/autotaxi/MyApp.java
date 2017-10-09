@@ -15,9 +15,8 @@ public class MyApp extends android.app.Application
         instance = this;
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreate() {
+        super.onCreate();
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }

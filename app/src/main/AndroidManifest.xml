@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.sharma.dhruv.autotaxi">
-
-    <uses-sdk tools:overrideLibrary="android.support.v7.appcompat" />
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+
     <application
         android:name=".MyApp"
         android:allowBackup="true"
