@@ -1,12 +1,15 @@
 package com.sharma.dhruv.autotaxi;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
 import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -27,7 +30,8 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.UUID;
 
-public class Main2Activity extends Activity {
+public class Main2Activity extends AppCompatActivity {
+    private static Main2Activity instance;
     public int pickx = 0, picky = 0, dropx = 0, dropy = 0;
     public int mode = 0; //0= initialise pickup, 1 = initialise dropoff
     public BluetoothAdapter myBluetooth = null;
@@ -49,6 +53,17 @@ public class Main2Activity extends Activity {
 
         // ... (Add other message types here as needed.)
     }
+
+    public Main2Activity() {
+        super();
+        instance = this;
+    }
+
+    public static void btPaired() {
+        // AddTouchListener();
+        instance.main();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +76,17 @@ public class Main2Activity extends Activity {
        main();
 
     }
-
+    BluetoothSocket createBluetoothSocket(BluetoothDevice device) throws IOException {
+        if(Build.VERSION.SDK_INT >= 10){
+            try {
+                final Method m = device.getClass().getMethod("createInsecureRfcommSocketToServiceRecord", new Class[] { UUID.class });
+                return (BluetoothSocket) m.invoke(device, MY_UUID);
+            } catch (Exception e) {
+                Log.e(TAG, "Could not create Insecure RFComm Connection",e);
+            }
+        }
+        return  device.createRfcommSocketToServiceRecord(MY_UUID);
+    }
     public void AddTouchListener() {
         ImageView image = (ImageView) findViewById(R.id.imageView2);
         image.setOnTouchListener(new View.OnTouchListener() {
@@ -103,6 +128,8 @@ public class Main2Activity extends Activity {
             myBluetooth = BluetoothAdapter.getDefaultAdapter();
 
             device = myBluetooth.getRemoteDevice(address);
+
+            mmSocket = createBluetoothSocket(device);
 
             mmOutStream = mmSocket.getOutputStream();
 
